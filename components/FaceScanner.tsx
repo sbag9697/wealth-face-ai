@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 interface FaceScannerProps {
@@ -61,15 +60,26 @@ export default function FaceScanner({ imageSrc }: FaceScannerProps) {
         4. Moving Scan Line 
         - The primary animation.
       */}
-            <motion.div
-                className="absolute w-full h-1 bg-yellow-400 z-30"
+            {/* 
+        4. Moving Scan Line 
+        - The primary animation (CSS Keyframes for stability).
+      */}
+            <div
+                className="absolute w-full h-1 bg-yellow-400 z-30 animate-scan-line"
                 style={{
                     boxShadow: "0 0 15px 2px rgba(250, 204, 21, 0.8)",
-                    top: "0%"
                 }}
-                animate={{ top: ["0%", "100%", "0%"] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
             />
+            <style jsx>{`
+                @keyframes scan {
+                    0% { top: 0%; }
+                    50% { top: 100%; }
+                    100% { top: 0%; }
+                }
+                .animate-scan-line {
+                    animation: scan 2.5s linear infinite;
+                }
+            `}</style>
 
             {/* 
         5. Cycling Analysis Text 

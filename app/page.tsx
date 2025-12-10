@@ -97,7 +97,7 @@ export default function Home() {
     const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
 
     if (!clientKey) {
-      alert("환경변수(NEXT_PUBLIC_TOSS_CLIENT_KEY)가 설정되지 않았습니다!");
+      alert("⚠️ 치명적 오류: Toss Client Key가 없습니다.\nVercel 환경변수 설정을 확인해주세요.");
       return;
     }
 

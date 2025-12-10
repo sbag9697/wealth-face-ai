@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Camera, Lock, CheckCircle2 } from "lucide-react";
-import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
+import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import FaceScanner from "@/components/FaceScanner";
 
 // 타입 정의
@@ -89,10 +89,9 @@ export default function Home() {
     }
   };
 
-  // 3. 결제 핸들러 (디버깅 추가)
+  // 3. 결제 핸들러 (Standard SDK for Popup)
   const handlePayment = async () => {
     const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
-    const customerKey = "ANONYMOUS";
 
     if (!clientKey) {
       alert("환경변수(NEXT_PUBLIC_TOSS_CLIENT_KEY)가 설정되지 않았습니다!");
@@ -100,17 +99,17 @@ export default function Home() {
     }
 
     try {
-      // 위젯 로드
-      const paymentWidget = await loadPaymentWidget(clientKey, customerKey);
+      // SDK 로드
+      const tossPayments = await loadTossPayments(clientKey);
 
-      // 결제 요청
-      await paymentWidget.requestPayment({
+      // 결제 요청 (카드 결제창 팝업)
+      await (tossPayments as any).requestPayment("카드", {
+        amount: 3900,
         orderId: `ORDER_${new Date().getTime()}`,
         orderName: "AI 관상 분석 리포트",
         customerName: "익명 고객",
         successUrl: `${window.location.origin}/result?success=true`,
         failUrl: `${window.location.origin}/result?fail=true`,
-        amount: 3900, // 금액 명시
       });
     } catch (error) {
       console.error("Payment Error:", error);

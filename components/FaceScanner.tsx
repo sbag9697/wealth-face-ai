@@ -85,14 +85,35 @@ export default function FaceScanner({ imageSrc }: FaceScannerProps) {
 
             {/* 
         6. Random Binary/Matrix Effect (Simulated) 
-        - Just some decorative random-looking numbers.
       */}
-            <div className="absolute top-4 right-4 text-[10px] text-yellow-500/60 font-mono text-right z-10">
-                <p>X: {Math.random().toFixed(4)}</p>
-                <p>Y: {Math.random().toFixed(4)}</p>
-                <p>Z: {Math.random().toFixed(4)}</p>
-            </div>
-
+            <RandomCoordinates />
         </div>
+    );
+}
+
+function RandomCoordinates() {
+    const [coords, setCoords] = useState({ x: 0, y: 0, z: 0 });
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCoords({
+                x: Math.random(),
+                y: Math.random(),
+                z: Math.random(),
+            });
+        }, 200);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="absolute top-4 right-4 text-[10px] text-yellow-500/60 font-mono text-right z-10">
+            <p>X: {coords.x.toFixed(4)}</p>
+            <p>Y: {coords.y.toFixed(4)}</p>
+            <p>Z: {coords.z.toFixed(4)}</p>
+        </div>
+    );
+}
+
+        </div >
     );
 }

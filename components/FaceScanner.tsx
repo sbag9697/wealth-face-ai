@@ -114,6 +114,3 @@ function RandomCoordinates() {
     );
 }
 
-        </div >
-    );
-}

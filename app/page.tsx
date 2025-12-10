@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Camera, Lock, CheckCircle2 } from "lucide-react";
+import { Camera, Lock, CheckCircle2, ShieldCheck, CreditCard } from "lucide-react";
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import FaceScanner from "@/components/FaceScanner";
 
@@ -16,6 +16,7 @@ interface AnalysisResult {
 }
 
 export default function Home() {
+  const [image, setImage] = useState<string | null>(null); // For display in Scanner
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"upload" | "scanning" | "teaser">("upload");
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -47,6 +48,7 @@ export default function Home() {
 
           // 70% quality JPEG
           const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
+          setImage(compressedDataUrl); // Set image state for Scanner background
           startAnalysis(compressedDataUrl);
         };
         img.src = event.target?.result as string;
@@ -76,10 +78,11 @@ export default function Home() {
       setResult(data);
       localStorage.setItem("wealth_analysis", JSON.stringify(data));
 
+      // Delay for dramatic effect
       setTimeout(() => {
         setStep("teaser");
         setLoading(false);
-      }, 3000);
+      }, 5000); // Increased to 5s to let user enjoy the detailed scanning effect
 
     } catch (error) {
       alert("AI 분석 중 오류가 발생했습니다. (API 키 확인 필요)\n" + (error instanceof Error ? error.message : String(error)));
@@ -118,63 +121,121 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4 max-w-md mx-auto relative bg-black text-white overflow-hidden">
+    <main className="min-h-screen flex flex-col items-center justify-center p-4 max-w-md mx-auto relative bg-black text-white overflow-hidden font-sans">
+
+      {/* Background Ambience */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-900/20 via-black to-black z-0 pointer-events-none" />
 
       {/* Step 1: 업로드 */}
       {step === "upload" && (
-        <div className="z-10 text-center space-y-8">
+        <div className="z-10 text-center space-y-8 animate-in fade-in zoom-in duration-700">
           <div>
-            <h1 className="text-3xl font-bold text-yellow-400 mb-2">
+            <div className="inline-block px-3 py-1 border border-yellow-600 rounded-full bg-yellow-900/30 mb-4">
+              <span className="text-yellow-400 text-xs font-bold tracking-widest">AI PHYSIOGNOMY v2.0</span>
+            </div>
+            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-700 mb-3 drop-shadow-md">
               Wealth Face AI
             </h1>
-            <p className="text-gray-400 text-sm">
-              상위 1% 부자 관상 데이터 대조
+            <p className="text-gray-400 text-sm leading-relaxed">
+              상위 1% 슈퍼 리치들의 관상 빅데이터와<br />당신의 얼굴을 AI가 대조 분석합니다.
             </p>
           </div>
 
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="w-64 h-64 mx-auto border-2 border-dashed border-gray-600 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-yellow-500 bg-gray-900"
+            className="w-72 h-72 mx-auto border-2 border-dashed border-gray-700 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-yellow-500 hover:bg-yellow-500/5 transition-all group relative overflow-hidden"
           >
-            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-4">
+            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10 pointer-events-none" />
+            <div className="w-20 h-20 bg-gray-800/80 rounded-full flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg shadow-black">
               <Camera className="w-8 h-8 text-yellow-500" />
             </div>
-            <p className="text-gray-500 font-medium">사진 업로드</p>
-            {/* Added capture='user' back for mobile camera support */}
+            <p className="text-gray-400 group-hover:text-yellow-400 font-bold transition-colors">
+              얼굴 사진 업로드
+            </p>
+            <p className="text-gray-600 text-xs mt-2">정면이 잘 나온 사진을 권장합니다</p>
             <input type="file" accept="image/*" ref={fileInputRef} capture="user" className="hidden" onChange={handleImageUpload} />
+          </div>
+
+          <div className="flex justify-center gap-4 text-[10px] text-gray-500 uppercase tracking-wider">
+            <span className="flex items-center"><ShieldCheck className="w-3 h-3 mr-1" /> Secure Scan</span>
+            <span className="flex items-center"><CheckCircle2 className="w-3 h-3 mr-1" /> 99.8% Accuracy</span>
           </div>
         </div>
       )}
 
       {/* Step 2: 스캔 */}
       {step === "scanning" && (
-        <div className="z-10 text-center space-y-6">
-          <FaceScanner />
-          <p className="text-yellow-400 animate-pulse font-bold">AI가 얼굴을 분석 중입니다...</p>
+        <div className="z-10 text-center space-y-8 w-full">
+          <FaceScanner imageSrc={image} />
+
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-white tracking-widest animate-pulse">
+              ANALYZING
+            </h2>
+            <p className="text-yellow-500/80 text-xs font-mono">
+              Connecting to Wealth Data Server...
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Step 3: 결제 유도 */}
+      {/* Step 3: 결제 유도 (Premium Report UI) */}
       {step === "teaser" && result && (
-        <div className="z-10 w-full space-y-6 text-center">
-          <h2 className="text-2xl font-bold">
-            당신은 <span className="text-yellow-400">{result.richLookalike}</span>과<br />
-            <span className="text-yellow-400">{result.matchRate}%</span> 일치합니다!
-          </h2>
+        <div className="z-10 w-full space-y-6 text-center animate-in slide-in-from-bottom duration-700">
 
-          <div className="bg-gray-800 p-6 rounded-xl relative overflow-hidden">
-            <div className="filter blur-sm opacity-30">
-              <p>상세 분석 내용이 여기에 표시됩니다...</p>
-              <p>재물운이 아주 강력하며...</p>
+          <div className="space-y-2">
+            <span className="text-yellow-500 text-xs font-bold tracking-widest uppercase">Analysis Complete</span>
+            <h2 className="text-3xl font-bold px-4 leading-tight">
+              당신은 <span className="text-yellow-400 underline decoration-yellow-600/50 underline-offset-4">{result.richLookalike}</span>과<br />
+              <span className="text-4xl text-yellow-400 drop-shadow-lg">{result.matchRate}%</span> 일치합니다.
+            </h2>
+          </div>
+
+          {/* Secret Report Card */}
+          <div className="relative mx-4 bg-[#1a1a1a] border border-yellow-600/30 rounded-xl overflow-hidden shadow-2xl shadow-yellow-900/20">
+            {/* Header */}
+            <div className="bg-black/50 p-3 border-b border-gray-800 flex justify-between items-center">
+              <span className="text-xs text-gray-500 font-mono">REPORT ID: #{new Date().getTime().toString().slice(-6)}</span>
+              <div className="flex gap-1">
+                <div className="w-2 h-2 rounded-full bg-red-500" />
+                <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                <div className="w-2 h-2 rounded-full bg-green-500" />
+              </div>
             </div>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <Lock className="w-10 h-10 text-yellow-500 mb-2" />
-              <button
-                onClick={handlePayment}
-                className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-full shadow-lg"
-              >
-                결과 확인하기 (3,900원)
-              </button>
+
+            {/* Blurred Content */}
+            <div className="p-6 relative">
+              <div className="filter blur-[6px] opacity-40 text-left space-y-3 select-none">
+                <h3 className="text-lg font-bold text-yellow-500 border-b border-yellow-500/30 pb-2">상세 분석 결과</h3>
+                <p className="text-sm text-gray-300">귀하의 이마는 초년운을 상징하며, 넓고 깨끗한 형태는 20대 후반부터...</p>
+                <p className="text-sm text-gray-300">특히 코의 준두가 두툼하여 재물을 모으는 창고 역할을 하고 있습니다. 다만...</p>
+                <p className="text-sm text-gray-300">35세 이후 폭발적인 자산 증식이 예상되며, 추천 투자처는...</p>
+                <div className="bg-yellow-900/10 p-3 rounded mt-4">
+                  <p className="font-bold text-yellow-400">잠재 자산: 000억 원</p>
+                </div>
+              </div>
+
+              {/* Lock Overlay */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-[2px] z-10 p-4">
+                <div className="bg-black p-4 rounded-full border border-yellow-500/50 shadow-[0_0_30px_rgba(250,204,21,0.2)] mb-4 animate-bounce">
+                  <Lock className="w-8 h-8 text-yellow-500" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">결과 잠금 해제</h3>
+                <p className="text-gray-300 text-sm mb-6 max-w-[200px] break-keep">
+                  전문 관상가의 상세 풀이와 잠재 자산 리포트를 확인하세요.
+                </p>
+
+                <button
+                  onClick={handlePayment}
+                  className="w-full max-w-xs bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <CreditCard className="w-5 h-5" />
+                  <span>전체 리포트 확인 (3,900원)</span>
+                </button>
+                <p className="mt-3 text-[10px] text-gray-500">
+                  * 커피 한 잔 값으로 당신의 인생을 바꿔보세요.
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -1,6 +1,0 @@
-# Google Gemini API Key
-GEMINI_API_KEY=AIzaSyB_8gNmjDAu8-LNDsoJ0r69bDj2WaktHrs
-# Toss Payments Client Key (테스트용)
-NEXT_PUBLIC_TOSS_CLIENT_KEY=test_ck_KNbdOvk5rkw2vmPnObKwrn07xlzm
-# Toss Payments Secret Key (서버 검증용, 현재 필수 아님)
-TOSS_SECRET_KEY=test_sk_key_here

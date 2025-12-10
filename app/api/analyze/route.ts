@@ -50,16 +50,28 @@ export async function POST(req: Request) {
 
     const responseText = result.response.text();
 
-    // JSON 파싱 (Gemini가 마크다운 코드블럭을 포함할 경우 제거)
-    const cleanedText = responseText.replace(/```json|```/g, "").trim();
+    // 1. First cleanup: Remove markdown code blocks
+    let cleanedText = responseText.replace(/```json|```/g, "").trim();
+
+    // 2. Second cleanup: Find the first '{' and last '}' to extract just the JSON object
+    // This handles cases where Gemini adds conversational text like "Here is the result: { ... }"
+    const firstBrace = cleanedText.indexOf("{");
+    const lastBrace = cleanedText.lastIndexOf("}");
+
+    if (firstBrace !== -1 && lastBrace !== -1) {
+      cleanedText = cleanedText.substring(firstBrace, lastBrace + 1);
+    }
 
     let analysisData;
     try {
       analysisData = JSON.parse(cleanedText);
     } catch (e) {
-      console.error("JSON Parse Error", cleanedText);
-      // Fallback or retry? Let's just return error
-      return NextResponse.json({ error: "분석 결과를 해석할 수 없습니다." }, { status: 500 });
+      console.error("JSON Parse Error. Raw Text:", responseText);
+      // Return the raw text in the error for debugging (if not too sensitive)
+      return NextResponse.json({
+        error: "분석 결과를 해석할 수 없습니다. (데이터 형식이 올바르지 않음)",
+        details: cleanedText.slice(0, 100) + "..."
+      }, { status: 500 });
     }
 
     return NextResponse.json(analysisData);

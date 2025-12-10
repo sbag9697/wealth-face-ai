@@ -131,7 +131,7 @@ export default function Home() {
         <div className="z-10 text-center space-y-8 animate-in fade-in zoom-in duration-700">
           <div>
             <div className="inline-block px-3 py-1 border border-yellow-600 rounded-full bg-yellow-900/30 mb-4">
-              <span className="text-yellow-400 text-xs font-bold tracking-widest">AI PHYSIOGNOMY v2.2 (Debug)</span>
+              <span className="text-yellow-400 text-xs font-bold tracking-widest">AI PHYSIOGNOMY v2.3 (Stable)</span>
             </div>
             <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-700 mb-3 drop-shadow-md">
               Wealth Face AI

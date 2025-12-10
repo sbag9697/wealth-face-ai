@@ -63,6 +63,6 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Gemini Error:", error);
     // If it's a 404, suggest model change in log
-    return NextResponse.json({ error: "관상 분석 중 천기누설 오류가 발생했습니다.", details: String(error) }, { status: 500 });
+    return NextResponse.json({ error: "관상 분석 실패: " + (error instanceof Error ? error.message : String(error)) }, { status: 500 });
   }
 }

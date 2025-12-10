@@ -27,10 +27,31 @@ export default function Home() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Client-side Resize Logic
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
-        startAnalysis(reader.result as string);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 800; // Resize to max 800px width
+          const scaleSize = MAX_WIDTH / img.width;
+
+          if (scaleSize < 1) {
+            canvas.width = MAX_WIDTH;
+            canvas.height = img.height * scaleSize;
+          } else {
+            canvas.width = img.width;
+            canvas.height = img.height;
+          }
+
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7); // 70% quality JPEG
+          setImage(compressedDataUrl);
+          startAnalysis(compressedDataUrl);
+        };
+        img.src = event.target?.result as string;
       };
       reader.readAsDataURL(file);
     }
@@ -68,7 +89,7 @@ export default function Home() {
 
     } catch (error) {
       console.error(error);
-      alert("분석 중 오류가 발생했습니다. 다시 시도해주세요.");
+      alert("오류: " + (error instanceof Error ? error.message : "알 수 없는 오류"));
       setStep("upload");
       setLoading(false);
     }
@@ -128,6 +149,7 @@ export default function Home() {
               type="file"
               accept="image/*"
               ref={fileInputRef}
+              capture="user"
               className="hidden"
               onChange={handleImageUpload}
             />

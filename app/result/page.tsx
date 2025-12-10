@@ -19,25 +19,49 @@ function ResultPageContent() {
     const router = useRouter();
 
     useEffect(() => {
-        // 1. Check for success query param (added in page.tsx successUrl)
-        // Actually, user's snippet in page.tsx used `${window.location.origin}/result` without params? 
-        // Wait, let's check my edit in page.tsx: I added `?success=true`.
-        // The user's snippet also had `check if paymentKey exists`.
-        // Toss redirects with `?paymentKey=...&orderId=...&amount=...` on success.
+        const verifyPayment = async () => {
+            const paymentKey = searchParams.get("paymentKey");
+            const orderId = searchParams.get("orderId");
+            const amount = searchParams.get("amount");
+            const storedData = localStorage.getItem("wealth_analysis");
 
-        const paymentKey = searchParams.get("paymentKey");
-        const storedData = localStorage.getItem("wealth_analysis");
+            // Case 1: Just returned from Payment Gateway (Needs Verification)
+            if (paymentKey && orderId && amount) {
+                try {
+                    const res = await fetch("/api/payment/confirm", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ paymentKey, orderId, amount }),
+                    });
 
-        if (paymentKey && storedData) {
-            setResult(JSON.parse(storedData));
-        } else if (storedData) {
-            // Just for dev/demo purposes as user requested: "if storedData exists, show it"
-            // In real prod, strict check would be here.
-            setResult(JSON.parse(storedData));
-        } else {
-            // No data
-            // router.push("/"); 
-        }
+                    if (res.ok) {
+                        // Verification Success
+                        if (storedData) setResult(JSON.parse(storedData));
+                        // Clean up URL
+                        window.history.replaceState({}, "", "/result?success=true");
+                    } else {
+                        // Verification Failed
+                        const errorData = await res.json();
+                        alert(`결제 승인 실패: ${errorData.error}`);
+                        router.push("/");
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert("결제 서버 연결 실패");
+                    router.push("/");
+                }
+            }
+            // Case 2: Already verified or Dev Mode (success=true)
+            else if (searchParams.get("success") === "true" && storedData) {
+                setResult(JSON.parse(storedData));
+            } else {
+                // Invalid access
+                // alert("잘못된 접근입니다.");
+                // router.push("/");
+            }
+        };
+
+        verifyPayment();
     }, [searchParams, router]);
 
     if (!result) return <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">결과를 불러오는 중...</div>;

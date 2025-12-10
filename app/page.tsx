@@ -102,6 +102,7 @@ export default function Home() {
     }
 
     try {
+      setLoading(true);
       // SDK 로드
       const tossPayments = await loadTossPayments(clientKey);
 
@@ -117,6 +118,7 @@ export default function Home() {
     } catch (error) {
       console.error("Payment Error:", error);
       alert("결제 창을 띄우는 데 실패했습니다. 콘솔을 확인하세요.");
+      setLoading(false);
     }
   };
 
@@ -227,10 +229,15 @@ export default function Home() {
 
                 <button
                   onClick={handlePayment}
-                  className="w-full max-w-xs bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                  disabled={loading}
+                  className="w-full max-w-xs bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <CreditCard className="w-5 h-5" />
-                  <span>전체 리포트 확인 (3,900원)</span>
+                  {loading ? (
+                    <span className="animate-spin text-xl">⏳</span>
+                  ) : (
+                    <CreditCard className="w-5 h-5" />
+                  )}
+                  <span>{loading ? "결제창 띄우는 중..." : "전체 리포트 확인 (3,900원)"}</span>
                 </button>
                 <p className="mt-3 text-[10px] text-gray-500">
                   * 커피 한 잔 값으로 당신의 인생을 바꿔보세요.

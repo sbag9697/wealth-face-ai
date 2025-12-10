@@ -133,7 +133,7 @@ export default function Home() {
         <div className="z-10 text-center space-y-8 animate-in fade-in zoom-in duration-700">
           <div>
             <div className="inline-block px-3 py-1 border border-yellow-600 rounded-full bg-yellow-900/30 mb-4">
-              <span className="text-yellow-400 text-xs font-bold tracking-widest">AI PHYSIOGNOMY v2.3 (Stable)</span>
+              <span className="text-yellow-400 text-xs font-bold tracking-widest">AI PHYSIOGNOMY v2.4 (Payment Fix)</span>
             </div>
             <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-700 mb-3 drop-shadow-md">
               Wealth Face AI
@@ -205,42 +205,44 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Blurred Content */}
-            <div className="p-6 relative">
-              <div className="filter blur-[6px] opacity-40 text-left space-y-3 select-none">
-                <h3 className="text-lg font-bold text-yellow-500 border-b border-yellow-500/30 pb-2">상세 분석 결과</h3>
-                <p className="text-sm text-gray-300">귀하의 이마는 초년운을 상징하며, 넓고 깨끗한 형태는 20대 후반부터...</p>
-                <p className="text-sm text-gray-300">특히 코의 준두가 두툼하여 재물을 모으는 창고 역할을 하고 있습니다. 다만...</p>
-                <p className="text-sm text-gray-300">35세 이후 폭발적인 자산 증식이 예상되며, 추천 투자처는...</p>
-                <div className="bg-yellow-900/10 p-3 rounded mt-4">
-                  <p className="font-bold text-yellow-400">잠재 자산: 000억 원</p>
+            {/* Blurred Content (Simplified for Mobile Stability) */}
+            <div className="p-6 relative min-h-[300px]">
+              <div className="opacity-10 text-left space-y-3 select-none pointer-events-none" aria-hidden="true">
+                <h3 className="text-lg font-bold text-gray-400 border-b border-gray-700 pb-2">상세 분석 결과 (보안 처리됨)</h3>
+                <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-sm text-gray-500">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p className="text-sm text-gray-500">Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+                <p className="text-sm text-gray-500">Duis aute irure dolor in reprehenderit in voluptate velit.</p>
+                <div className="bg-gray-800 p-3 rounded mt-4">
+                  <p className="font-bold text-gray-600">잠재 자산: ???억 원</p>
                 </div>
               </div>
 
               {/* Lock Overlay - Forced Visibility */}
-              <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/80 p-4">
-                <div className="bg-black p-4 rounded-full border border-yellow-500 shadow-[0_0_30px_rgba(250,204,21,0.4)] mb-4 animate-bounce">
-                  <Lock className="w-8 h-8 text-yellow-500" />
+              <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-gray-900/95 p-4 rounded-xl">
+                <div className="bg-black p-4 rounded-full border border-yellow-500 shadow-[0_0_30px_rgba(250,204,21,0.4)] mb-4">
+                  <Lock className="w-8 h-8 text-yellow-500 animate-pulse" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">결과 잠금 해제</h3>
-                <p className="text-gray-300 text-sm mb-6 max-w-[200px] break-keep">
-                  전문 관상가의 상세 풀이와 잠재 자산 리포트를 확인하세요.
+                <h3 className="text-2xl font-bold text-white mb-2 text-center">결과가 잠겨있습니다</h3>
+                <p className="text-gray-300 text-sm mb-6 text-center max-w-[240px]">
+                  상위 1% 부자 데이터와 대조된<br />
+                  <span className="text-yellow-400 font-bold">상세 관상 풀이</span>를 지금 확인하세요.
                 </p>
 
                 <button
                   onClick={handlePayment}
                   disabled={loading}
-                  className="w-full max-w-xs bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full max-w-xs bg-yellow-500 hover:bg-yellow-400 text-black font-extrabold py-4 px-6 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
                 >
                   {loading ? (
                     <span className="animate-spin text-xl">⏳</span>
                   ) : (
                     <CreditCard className="w-5 h-5" />
                   )}
-                  <span>{loading ? "결제창 띄우는 중..." : "전체 리포트 확인 (3,900원)"}</span>
+                  <span>{loading ? "결제 준비 중..." : "리포트 잠금해제 (3,900원)"}</span>
                 </button>
-                <p className="mt-3 text-[10px] text-gray-500">
-                  * 커피 한 잔 값으로 당신의 인생을 바꿔보세요.
+                <p className="mt-4 text-[10px] text-gray-500 text-center">
+                  * 결제 시 1000자 이상의 상세 분석이 제공됩니다.
                 </p>
               </div>
             </div>

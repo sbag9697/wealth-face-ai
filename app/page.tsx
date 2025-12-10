@@ -217,9 +217,9 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Lock Overlay */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-[2px] z-10 p-4">
-                <div className="bg-black p-4 rounded-full border border-yellow-500/50 shadow-[0_0_30px_rgba(250,204,21,0.2)] mb-4 animate-bounce">
+              {/* Lock Overlay - Forced Visibility */}
+              <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/80 p-4">
+                <div className="bg-black p-4 rounded-full border border-yellow-500 shadow-[0_0_30px_rgba(250,204,21,0.4)] mb-4 animate-bounce">
                   <Lock className="w-8 h-8 text-yellow-500" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">결과 잠금 해제</h3>

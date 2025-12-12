@@ -35,6 +35,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        {/* Toss Payments SDK V1 (Classical Window Method) */}
+        <script src="https://js.tosspayments.com/v1/payment"></script>
       </body>
     </html>
   );

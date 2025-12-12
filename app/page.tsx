@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Camera, Lock, CheckCircle2, ShieldCheck, CreditCard } from "lucide-react";
-import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
+import { Camera, Lock, CheckCircle2, ShieldCheck, CreditCard } from "lucide-react";
 import FaceScanner from "@/components/FaceScanner";
 
 // 타입 정의
@@ -103,11 +103,17 @@ export default function Home() {
 
     try {
       setLoading(true);
-      // SDK 로드
-      const tossPayments = await loadTossPayments(clientKey);
 
-      // 결제 요청 (카드 결제창 팝업)
-      await (tossPayments as any).requestPayment("카드", {
+      // 1. Check if SDK is loaded
+      if (typeof window === "undefined" || !(window as any).TossPayments) {
+        throw new Error("Toss Payments SDK가 로드되지 않았습니다. 인터넷 연결을 확인하거나 새로고침 해주세요.");
+      }
+
+      // 2. Initialize V1 SDK (Standard Popup)
+      const tossPayments = new (window as any).TossPayments(clientKey);
+
+      // 3. Request Payment
+      await tossPayments.requestPayment("카드", {
         amount: 3900,
         orderId: `ORDER_${new Date().getTime()}`,
         orderName: "AI 관상 분석 리포트",
@@ -115,6 +121,7 @@ export default function Home() {
         successUrl: `${window.location.origin}/result?success=true`,
         failUrl: `${window.location.origin}/result?fail=true`,
       });
+
     } catch (error) {
       console.error("Payment Error:", error);
       alert(`결제 초기화 실패: ${error instanceof Error ? error.message : String(error)}`);
@@ -137,7 +144,7 @@ export default function Home() {
       {/* On-Screen Debugger (Visible to User for troubleshooting) */}
       <div className="fixed top-2 left-2 z-[9999] opacity-70 pointer-events-auto">
         <div className="bg-red-900/80 p-2 rounded text-[10px] text-white space-y-1">
-          <p>v2.6 (Z-Index Fix)</p>
+          <p>v2.8 (SDK Fix)</p>
           <p>Step: {step}</p>
           <p>Result: {result ? "Loaded" : "Null"}</p>
           <button onClick={handleReset} className="px-2 py-1 bg-white text-black rounded font-bold mt-1">
@@ -154,7 +161,7 @@ export default function Home() {
         <div className="z-10 text-center space-y-8 animate-in fade-in zoom-in duration-700 mt-10">
           <div>
             <div className="inline-block px-3 py-1 border border-yellow-600 rounded-full bg-yellow-900/30 mb-4">
-              <span className="text-yellow-400 text-xs font-bold tracking-widest">AI PHYSIOGNOMY v2.6 (Z-Index Fix)</span>
+              <span className="text-yellow-400 text-xs font-bold tracking-widest">AI PHYSIOGNOMY v2.8 (SDK Fix)</span>
             </div>
             <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-700 mb-3 drop-shadow-md">
               Wealth Face AI

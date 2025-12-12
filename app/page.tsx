@@ -117,7 +117,7 @@ export default function Home() {
       });
     } catch (error) {
       console.error("Payment Error:", error);
-      alert("결제 창을 띄우는 데 실패했습니다. 콘솔을 확인하세요.");
+      alert(`결제 초기화 실패: ${error instanceof Error ? error.message : String(error)}`);
       setLoading(false);
     }
   };

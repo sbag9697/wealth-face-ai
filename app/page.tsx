@@ -122,18 +122,39 @@ export default function Home() {
     }
   };
 
+  // Debug Reset Function
+  const handleReset = () => {
+    localStorage.removeItem("wealth_analysis");
+    setStep("upload");
+    setResult(null);
+    setImage(null);
+    window.location.reload();
+  };
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4 max-w-md mx-auto relative bg-black text-white overflow-hidden font-sans">
+    <main className="min-h-screen flex flex-col p-6 max-w-md mx-auto relative bg-black text-white font-sans overflow-y-auto">
+
+      {/* On-Screen Debugger (Visible to User for troubleshooting) */}
+      <div className="fixed top-2 left-2 z-[9999] opacity-70 pointer-events-auto">
+        <div className="bg-red-900/80 p-2 rounded text-[10px] text-white space-y-1">
+          <p>v2.5 (Layout Fix)</p>
+          <p>Step: {step}</p>
+          <p>Result: {result ? "Loaded" : "Null"}</p>
+          <button onClick={handleReset} className="px-2 py-1 bg-white text-black rounded font-bold mt-1">
+            RESET APP
+          </button>
+        </div>
+      </div>
 
       {/* Background Ambience */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-900/20 via-black to-black z-0 pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-900/20 via-black to-black z-0" />
 
       {/* Step 1: 업로드 */}
       {step === "upload" && (
-        <div className="z-10 text-center space-y-8 animate-in fade-in zoom-in duration-700">
+        <div className="z-10 text-center space-y-8 animate-in fade-in zoom-in duration-700 mt-10">
           <div>
             <div className="inline-block px-3 py-1 border border-yellow-600 rounded-full bg-yellow-900/30 mb-4">
-              <span className="text-yellow-400 text-xs font-bold tracking-widest">AI PHYSIOGNOMY v2.4 (Payment Fix)</span>
+              <span className="text-yellow-400 text-xs font-bold tracking-widest">AI PHYSIOGNOMY v2.5</span>
             </div>
             <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-700 mb-3 drop-shadow-md">
               Wealth Face AI
@@ -167,7 +188,7 @@ export default function Home() {
 
       {/* Step 2: 스캔 */}
       {step === "scanning" && (
-        <div className="z-10 text-center space-y-8 w-full">
+        <div className="z-10 text-center space-y-8 w-full mt-20">
           <FaceScanner imageSrc={image} />
 
           <div className="space-y-2">
@@ -183,7 +204,7 @@ export default function Home() {
 
       {/* Step 3: 결제 유도 (Premium Report UI) */}
       {step === "teaser" && result && (
-        <div className="z-10 w-full space-y-6 text-center animate-in slide-in-from-bottom duration-700">
+        <div className="z-10 w-full space-y-6 text-center animate-in slide-in-from-bottom duration-700 pb-10 mt-10">
 
           <div className="space-y-2">
             <span className="text-yellow-500 text-xs font-bold tracking-widest uppercase">Analysis Complete</span>
@@ -194,7 +215,7 @@ export default function Home() {
           </div>
 
           {/* Secret Report Card */}
-          <div className="relative mx-4 bg-[#1a1a1a] border border-yellow-600/30 rounded-xl overflow-hidden shadow-2xl shadow-yellow-900/20">
+          <div className="relative mx-auto w-full bg-[#1a1a1a] border border-yellow-600/30 rounded-xl overflow-hidden shadow-2xl shadow-yellow-900/20">
             {/* Header */}
             <div className="bg-black/50 p-3 border-b border-gray-800 flex justify-between items-center">
               <span className="text-xs text-gray-500 font-mono">REPORT ID: #{new Date().getTime().toString().slice(-6)}</span>
@@ -206,7 +227,7 @@ export default function Home() {
             </div>
 
             {/* Blurred Content (Simplified for Mobile Stability) */}
-            <div className="p-6 relative min-h-[300px]">
+            <div className="p-6 relative min-h-[350px]">
               <div className="opacity-10 text-left space-y-3 select-none pointer-events-none" aria-hidden="true">
                 <h3 className="text-lg font-bold text-gray-400 border-b border-gray-700 pb-2">상세 분석 결과 (보안 처리됨)</h3>
                 <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>

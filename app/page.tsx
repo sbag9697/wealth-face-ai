@@ -221,5 +221,61 @@ export default function Home() {
               <span className="text-xs text-gray-500 font-mono">REPORT ID: #{new Date().getTime().toString().slice(-6)}</span>
               <div className="flex gap-1">
                 <div className="w-2 h-2 rounded-full bg-red-500" />
-                );
+                <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                <div className="w-2 h-2 rounded-full bg-green-500" />
+              </div>
+            </div>
+
+            {/* 
+              v2.6 FIX: Swapped Hierarchy
+              - Before: Text was Relative (height setter), Overlay was Absolute (clipped).
+              - After: Overlay is Relative (height setter), Text is Absolute (background).
+              This guarantees the Payment Button is NEVER clipped.
+            */}
+            <div className="p-6 relative">
+              {/* Background Decoration (Absolute) */}
+              <div className="absolute inset-0 p-6 opacity-10 text-left space-y-3 select-none pointer-events-none overflow-hidden" aria-hidden="true">
+                <h3 className="text-lg font-bold text-gray-400 border-b border-gray-700 pb-2">상세 분석 결과 (보안 처리됨)</h3>
+                <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-sm text-gray-500">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p className="text-sm text-gray-500">Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+                <p className="text-sm text-gray-500">Duis aute irure dolor in reprehenderit in voluptate velit.</p>
+                <div className="bg-gray-800 p-3 rounded mt-4">
+                  <p className="font-bold text-gray-600">잠재 자산: ???억 원</p>
+                </div>
+              </div>
+
+              {/* Main Content (Relative - Dictates Height) */}
+              <div className="relative z-50 flex flex-col items-center justify-center bg-gray-900/95 p-6 rounded-xl border border-yellow-500/20 backdrop-blur-sm">
+                <div className="bg-black p-4 rounded-full border border-yellow-500 shadow-[0_0_30px_rgba(250,204,21,0.4)] mb-4">
+                  <Lock className="w-8 h-8 text-yellow-500 animate-pulse" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-2 text-center">결과가 잠겨있습니다</h3>
+                <p className="text-gray-300 text-sm mb-6 text-center max-w-[240px]">
+                  상위 1% 부자 데이터와 대조된<br />
+                  <span className="text-yellow-400 font-bold">상세 관상 풀이</span>를 지금 확인하세요.
+                </p>
+
+                <button
+                  onClick={handlePayment}
+                  disabled={loading}
+                  className="w-full max-w-xs bg-yellow-500 hover:bg-yellow-400 text-black font-extrabold py-4 px-6 rounded-xl shadow-lg transform transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
+                >
+                  {loading ? (
+                    <span className="animate-spin text-xl">⏳</span>
+                  ) : (
+                    <CreditCard className="w-5 h-5" />
+                  )}
+                  <span>{loading ? "결제 준비 중..." : "리포트 잠금해제 (3,900원)"}</span>
+                </button>
+                <p className="mt-4 text-[10px] text-gray-500 text-center">
+                  * 결제 시 1000자 이상의 상세 분석이 제공됩니다.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
 }

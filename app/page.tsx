@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import { Camera, Lock, CheckCircle2, ShieldCheck, CreditCard } from "lucide-react";
-import { Camera, Lock, CheckCircle2, ShieldCheck, CreditCard } from "lucide-react";
 import FaceScanner from "@/components/FaceScanner";
 
 // 타입 정의
